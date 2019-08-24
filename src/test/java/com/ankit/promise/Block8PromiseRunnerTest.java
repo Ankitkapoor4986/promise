@@ -23,9 +23,8 @@ public class Block8PromiseRunnerTest {
     private void callPromise(List<Person> persons, Function<List<Person>, Integer> ageAdderFunction) {
         Promise<Integer> promise = new Block8Promise<>();
         Promise<Integer> sumAgeHolderPromise = promise.then(ageAdderFunction, persons);
-        sumAgeHolderPromise.thenAccept((age)->System.out.println(age.get()),
+        sumAgeHolderPromise.thenAccept((age) -> System.out.println(age.get()),
                 sumAgeHolderPromise.getValueHolder());
-
 
 
     }
