@@ -1,14 +1,17 @@
 package com.ankit.promise;
 
+import com.ankit.promise.processor.ThreadRunner;
+import com.ankit.promise.processor.ValueHolder;
+
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class Block8Promise<R> implements Promise<R> {
 
-    ThreadValueReturner<R> threadValueReturner;
+    private ValueHolder<R> valueHolder;
 
-    public Block8Promise(ThreadValueReturner<R> threadValueReturner) {
-        this.threadValueReturner = threadValueReturner;
+    public Block8Promise(ValueHolder<R> valueHolder) {
+        this.valueHolder = valueHolder;
     }
 
     public Block8Promise(){
@@ -16,16 +19,19 @@ public class Block8Promise<R> implements Promise<R> {
     }
 
     @Override
-    public <T> Promise<R> then(Function<T, R> function,T t) {
-
-        threadValueReturner = new ThreadValueReturner<>();
-        threadValueReturner.call(function,t);
-
-        return new Block8Promise<>(threadValueReturner);
+    public <T> Promise<R> then(Function<T, R> function, T t) {
+        ThreadRunner<R> threadRunner = new ThreadRunner<>();
+        ValueHolder<R> valueHolder = threadRunner.call(function, t);
+        return new Block8Promise<>(valueHolder);
     }
 
     @Override
-    public <T> void thenAccept(Consumer<T> consumer) {
+    public <T> void thenAccept(Consumer<T> consumer ,T t) {
+            consumer.accept(t);
+    }
 
+
+    public ValueHolder<R> getValueHolder() {
+        return valueHolder;
     }
 }
