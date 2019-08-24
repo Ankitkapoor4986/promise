@@ -14,7 +14,7 @@ public class Block8PromiseRunnerTest {
 
         List<Person> persons = getPersons();
         Function<List<Person>, Integer> ageAdderFunction = (personList) -> personList.stream()
-                .mapToInt(person -> person.getAge()).sum();
+                .mapToInt(Person::getAge).sum();
 
         callPromise(persons, ageAdderFunction);
 
