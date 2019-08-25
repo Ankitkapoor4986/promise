@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-public class Block8PromiseRunnerTest {
+public class PromiseImplTest {
 
     @Test
     public void shouldRunPromiseToGetSumOfAge(){
@@ -21,7 +21,7 @@ public class Block8PromiseRunnerTest {
     }
 
     private void callPromise(List<Person> persons, Function<List<Person>, Integer> ageAdderFunction) {
-        Promise<Integer> promise = new Block8Promise<>();
+        Promise<Integer> promise = new PromiseImpl<>();
         Promise<Integer> sumAgeHolderPromise = promise.then(ageAdderFunction, persons);
         sumAgeHolderPromise.thenAccept((age) -> System.out.println(age.get()),
                 sumAgeHolderPromise.getValueHolder());

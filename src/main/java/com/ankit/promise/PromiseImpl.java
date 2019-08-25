@@ -6,15 +6,15 @@ import com.ankit.promise.processor.ValueHolder;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class Block8Promise<R> implements Promise<R> {
+public class PromiseImpl<R> implements Promise<R> {
 
     private ValueHolder<R> valueHolder;
 
-    public Block8Promise(ValueHolder<R> valueHolder) {
+    public PromiseImpl(ValueHolder<R> valueHolder) {
         this.valueHolder = valueHolder;
     }
 
-    public Block8Promise(){
+    public PromiseImpl(){
 
     }
 
@@ -22,7 +22,7 @@ public class Block8Promise<R> implements Promise<R> {
     public <T> Promise<R> then(Function<T, R> function, T t) {
         ThreadRunner<R> threadRunner = new ThreadRunner<>();
         ValueHolder<R> valueHolder = threadRunner.call(function, t);
-        return new Block8Promise<>(valueHolder);
+        return new PromiseImpl<>(valueHolder);
     }
 
     @Override
