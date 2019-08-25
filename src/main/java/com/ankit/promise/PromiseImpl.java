@@ -5,6 +5,7 @@ import com.ankit.promise.processor.ValueHolder;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class PromiseImpl<R> implements Promise<R> {
 
@@ -18,8 +19,25 @@ public class PromiseImpl<R> implements Promise<R> {
 
     }
 
+
+
+
+
     @Override
-    public <T> Promise<R> then(Function<T, R> function, T t) {
+    public <T> Promise<R> then(Function<T, R> resolve, T t, Function<T, R> reject, Predicate<T> predicate) {
+        if(predicate.test(t)) {
+            return doProcessing(resolve, t);
+        }else {
+            return doProcessing(reject,t);
+        }
+    }
+
+    @Override
+    public <T> Promise<R> then(Function<T, R> resolve, T t) {
+        return doProcessing(resolve,t);
+    }
+
+    private <T> Promise<R> doProcessing(Function<T, R> function, T t) {
         ThreadRunner<R> threadRunner = new ThreadRunner<>();
         ValueHolder<R> valueHolder = threadRunner.call(function, t);
         return new PromiseImpl<>(valueHolder);

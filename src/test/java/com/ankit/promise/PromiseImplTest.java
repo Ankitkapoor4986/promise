@@ -53,4 +53,7 @@ public class PromiseImplTest {
         mulTwicePromise.thenAccept(consumerPersonList, multipliedSalPromise.getValueHolder().get());
 
     }
+
+
+
 }
