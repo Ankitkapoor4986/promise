@@ -5,8 +5,8 @@ public class ValueHolder<R> {
     private R returnValue;
     private Thread valueSetterThread;
 
-    public ValueHolder(Thread thread) {
-        this.valueSetterThread = thread;
+    public ValueHolder(Thread valueSetterThread) {
+        this.valueSetterThread = valueSetterThread;
 
     }
 

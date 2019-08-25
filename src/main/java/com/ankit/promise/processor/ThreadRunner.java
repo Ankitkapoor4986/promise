@@ -5,6 +5,8 @@ import java.util.function.Supplier;
 
 public class ThreadRunner<R> {
 
+    private static final String VALUE_CALCULATOR_THREAD = "valueCalculatorThread";
+    private static final String VALUE_SETTER_THREAD = "valueSetterThread";
     private R returnVal;
     private ValueHolder<R> valueHolder;
 
@@ -22,9 +24,9 @@ public class ThreadRunner<R> {
     }
 
     private void doProcessing(Runnable runnable) {
-        Thread valueCalculatorThread = startThread(runnable);
+        Thread valueCalculatorThread = startThread(runnable, VALUE_CALCULATOR_THREAD);
         Runnable valueSetterRunnable = initializeValueSetterRunnable(valueCalculatorThread);
-        Thread valueSetterThread = startThread(valueSetterRunnable);
+        Thread valueSetterThread = startThread(valueSetterRunnable, VALUE_SETTER_THREAD);
         valueHolder = new ValueHolder<>(valueSetterThread);
 
     }
@@ -56,7 +58,7 @@ public class ThreadRunner<R> {
         }
     }
 
-    private Thread startThread(Runnable runnable) {
+    private Thread startThread(Runnable runnable, String name) {
         Thread thread = new Thread(runnable);
         thread.start();
         return thread;
