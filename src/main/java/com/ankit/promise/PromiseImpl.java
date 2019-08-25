@@ -10,7 +10,7 @@ public class PromiseImpl<R> implements Promise<R> {
 
     private ValueHolder<R> valueHolder;
 
-    public PromiseImpl(ValueHolder<R> valueHolder) {
+    private PromiseImpl(ValueHolder<R> valueHolder) {
         this.valueHolder = valueHolder;
     }
 
