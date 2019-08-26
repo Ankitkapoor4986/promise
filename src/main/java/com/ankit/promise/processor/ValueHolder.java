@@ -5,16 +5,23 @@ public class ValueHolder<R> {
     private R returnValue;
     private Thread valueSetterThread;
 
-    public ValueHolder(Thread valueSetterThread) {
+     ValueHolder(Thread valueSetterThread) {
         this.valueSetterThread = valueSetterThread;
 
     }
 
+     ValueHolder() {
 
-     void setValue(R returnVal) {
+    }
+
+
+    void setValue(R returnVal) {
         this.returnValue = returnVal;
     }
 
+    void setValueSetterThread(Thread valueSetterThread) {
+        this.valueSetterThread = valueSetterThread;
+    }
 
 
     public R get(){

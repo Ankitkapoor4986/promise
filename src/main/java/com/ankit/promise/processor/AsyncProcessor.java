@@ -4,11 +4,11 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class ThreadRunner<R> {
+public class AsyncProcessor<R> {
 
 
     private R returnVal;
-    private ValueHolder<R> valueHolder;
+
 
 
     public <T> void call(Consumer<T> consumer ,T t){
@@ -24,15 +24,18 @@ public class ThreadRunner<R> {
         Runnable runnable = () -> {
             returnVal = functionToExecute.apply(t);
         };
-        doProcessing(runnable);
-        return valueHolder;
+        return buildValueHolder(runnable);
+
     }
 
-    private void doProcessing(Runnable runnable) {
+    private ValueHolder<R> buildValueHolder(Runnable runnable) {
         Thread valueCalculatorThread = startThread(runnable);
-        Runnable valueSetterRunnable = initializeValueSetterRunnable(valueCalculatorThread);
+        ValueHolder<R> valueHolder = new ValueHolder<>();
+        Runnable valueSetterRunnable = initializeValueSetterRunnable(valueCalculatorThread,valueHolder);
         Thread valueSetterThread = startThread(valueSetterRunnable);
-        valueHolder = new ValueHolder<>(valueSetterThread);
+        valueHolder.setValueSetterThread(valueSetterThread);
+        return valueHolder;
+
 
     }
 
@@ -41,11 +44,11 @@ public class ThreadRunner<R> {
             returnVal = supplier.get();
         };
 
-        doProcessing(runnable);
-        return valueHolder;
+        return buildValueHolder(runnable);
+
     }
 
-    private Runnable  initializeValueSetterRunnable(Thread valueCalculatorThread) {
+    private Runnable  initializeValueSetterRunnable(Thread valueCalculatorThread, ValueHolder<R> valueHolder) {
         return () -> {
             joinThread(valueCalculatorThread);
             valueHolder.setValue(returnVal);

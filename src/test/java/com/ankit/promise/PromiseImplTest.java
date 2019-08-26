@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class PromiseImplTest {
 
     @Test
-    public void shouldRunPromiseToGetSumOfAge(){
+    public void shouldRunPromiseToGetSumOfAge() {
 
         List<Person> persons = getPersons();
         Function<List<Person>, Integer> ageAdderFunction = getAgeAdderFunction();

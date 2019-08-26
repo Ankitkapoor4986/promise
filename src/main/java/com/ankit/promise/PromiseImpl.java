@@ -1,6 +1,6 @@
 package com.ankit.promise;
 
-import com.ankit.promise.processor.ThreadRunner;
+import com.ankit.promise.processor.AsyncProcessor;
 import com.ankit.promise.processor.ValueHolder;
 
 import java.util.function.Consumer;
@@ -38,15 +38,15 @@ public class PromiseImpl<R> implements Promise<R> {
     }
 
     private <T> Promise<R> doProcessing(Function<T, R> function, T t) {
-        ThreadRunner<R> threadRunner = new ThreadRunner<>();
-        ValueHolder<R> valueHolder = threadRunner.call(function, t);
+        AsyncProcessor<R> asyncProcessor = new AsyncProcessor<>();
+        ValueHolder<R> valueHolder = asyncProcessor.call(function, t);
         return new PromiseImpl<>(valueHolder);
     }
 
     @Override
     public <T> void thenAccept(Consumer<T> consumer ,T t) {
-        ThreadRunner<R> threadRunner = new ThreadRunner<>();
-        threadRunner.call(consumer,t);
+        AsyncProcessor<R> asyncProcessor = new AsyncProcessor<>();
+        asyncProcessor.call(consumer,t);
     }
 
 
