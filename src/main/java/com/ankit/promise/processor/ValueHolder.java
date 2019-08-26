@@ -24,17 +24,9 @@ public class ValueHolder<R> {
 
 
     public R get(){
-        joinValueSetterThread();
+        AsyncProcessorUtil.joinThread(valueSetterThread);
         return returnValue;
     }
 
-    private void joinValueSetterThread() {
-        try {
-            if(valueSetterThread.isAlive()) {
-                valueSetterThread.join();
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+
 }

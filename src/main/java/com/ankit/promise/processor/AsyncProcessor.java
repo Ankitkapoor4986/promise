@@ -66,21 +66,13 @@ public class AsyncProcessor<R> {
 
     private Runnable  initializeValueSetterRunnable(Thread valueCalculatorThread, ValueHolder<R> valueHolder) {
         return () -> {
-            joinThread(valueCalculatorThread);
+            AsyncProcessorUtil.joinThread(valueCalculatorThread);
             valueHolder.setValue(returnVal);
         };
 
     }
 
-    private void joinThread(Thread thread) {
-        try {
-            if(thread.isAlive()) {
-                thread.join();
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     private Thread startThread(Runnable runnable) {
         Thread thread = new Thread(runnable);
