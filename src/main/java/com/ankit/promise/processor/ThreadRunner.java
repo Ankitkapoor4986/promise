@@ -1,17 +1,22 @@
 package com.ankit.promise.processor;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class ThreadRunner<R> {
 
-    private static final String VALUE_CALCULATOR_THREAD = "valueCalculatorThread";
-    private static final String VALUE_SETTER_THREAD = "valueSetterThread";
+
     private R returnVal;
     private ValueHolder<R> valueHolder;
 
 
-
+    public <T> void call(Consumer<T> consumer ,T t){
+        Runnable runnable = () -> {
+            consumer.accept(t);
+        };
+       startThread(runnable);
+    }
 
 
     public <T>  ValueHolder<R> call(Function<T, R> functionToExecute, T t) {
@@ -24,9 +29,9 @@ public class ThreadRunner<R> {
     }
 
     private void doProcessing(Runnable runnable) {
-        Thread valueCalculatorThread = startThread(runnable, VALUE_CALCULATOR_THREAD);
+        Thread valueCalculatorThread = startThread(runnable);
         Runnable valueSetterRunnable = initializeValueSetterRunnable(valueCalculatorThread);
-        Thread valueSetterThread = startThread(valueSetterRunnable, VALUE_SETTER_THREAD);
+        Thread valueSetterThread = startThread(valueSetterRunnable);
         valueHolder = new ValueHolder<>(valueSetterThread);
 
     }
@@ -58,7 +63,7 @@ public class ThreadRunner<R> {
         }
     }
 
-    private Thread startThread(Runnable runnable, String name) {
+    private Thread startThread(Runnable runnable) {
         Thread thread = new Thread(runnable);
         thread.start();
         return thread;

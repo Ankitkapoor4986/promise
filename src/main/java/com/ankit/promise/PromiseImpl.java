@@ -45,7 +45,8 @@ public class PromiseImpl<R> implements Promise<R> {
 
     @Override
     public <T> void thenAccept(Consumer<T> consumer ,T t) {
-            consumer.accept(t);
+        ThreadRunner<R> threadRunner = new ThreadRunner<>();
+        threadRunner.call(consumer,t);
     }
 
 
