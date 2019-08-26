@@ -12,7 +12,11 @@ public interface Promise<R> {
 
     <T> Promise<R> then(Function<T, R> resolve, T t);
 
+    <T> Promise<R> then(Function<T, R> resolve, ValueHolder<T> valueHolder);
+
     <T> void thenAccept(Consumer<T> consumer, T t);
+
+    <T> void thenAccept(Consumer<T> consumer, ValueHolder<T> valueHolder);
 
     ValueHolder<R> getValueHolder();
 }

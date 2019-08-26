@@ -50,8 +50,9 @@ public class PromiseImplTest {
     }
 
     private void printSum(Promise<Integer> sumAgeHolderPromise) {
-        sumAgeHolderPromise.thenAccept((age) -> System.out.println(age.get()),
-                sumAgeHolderPromise.getValueHolder());
+
+        sumAgeHolderPromise.thenAccept((sum) -> System.out.println(sum),
+                sumAgeHolderPromise.getValueHolder().get());
     }
 
     private List<Person> getPersons() {
@@ -70,9 +71,9 @@ public class PromiseImplTest {
 
         Promise<List<Person>> promise = new PromiseImpl<>();
         Promise<List<Person>> multipliedSalPromise = promise.then(multipliedSalFunction, persons);
-        Promise<List<Person>> mulTwicePromise = multipliedSalPromise.then(multipliedSalFunction, multipliedSalPromise.getValueHolder().get());
+        Promise<List<Person>> mulTwicePromise = multipliedSalPromise.then(multipliedSalFunction, multipliedSalPromise.getValueHolder());
         Consumer<List<Person>> consumerPersonList = (people) -> people.forEach(person -> System.out.println(person.getSalary()));
-        mulTwicePromise.thenAccept(consumerPersonList, multipliedSalPromise.getValueHolder().get());
+        mulTwicePromise.thenAccept(consumerPersonList, multipliedSalPromise.getValueHolder());
 
     }
 

@@ -3,6 +3,8 @@ package com.ankit.promise.processor;
 public class ValueHolder<R> {
 
     private R returnValue;
+
+
     private Thread valueSetterThread;
 
      ValueHolder(Thread valueSetterThread) {
@@ -18,6 +20,11 @@ public class ValueHolder<R> {
     void setValue(R returnVal) {
         this.returnValue = returnVal;
     }
+
+    public Thread getValueSetterThread() {
+        return valueSetterThread;
+    }
+
 
     void setValueSetterThread(Thread valueSetterThread) {
         this.valueSetterThread = valueSetterThread;

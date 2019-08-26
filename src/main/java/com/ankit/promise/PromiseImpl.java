@@ -19,10 +19,6 @@ public class PromiseImpl<R> implements Promise<R> {
 
     }
 
-
-
-
-
     @Override
     public <T> Promise<R> then(Function<T, R> resolve, T t, Function<T, R> reject, Predicate<T> predicate) {
         if(predicate.test(t)) {
@@ -37,9 +33,20 @@ public class PromiseImpl<R> implements Promise<R> {
         return doProcessing(resolve,t);
     }
 
+    @Override
+    public <T> Promise<R> then(Function<T, R> resolve, ValueHolder<T> valueHolder) {
+        return doProcessing(resolve,valueHolder);
+    }
+
     private <T> Promise<R> doProcessing(Function<T, R> function, T t) {
         AsyncProcessor<R> asyncProcessor = new AsyncProcessor<>();
         ValueHolder<R> valueHolder = asyncProcessor.call(function, t);
+        return new PromiseImpl<>(valueHolder);
+    }
+
+    private <T> Promise<R> doProcessing(Function<T, R> function, ValueHolder<T> argsValueHolder) {
+        AsyncProcessor<R> asyncProcessor = new AsyncProcessor<>();
+        ValueHolder<R> valueHolder = asyncProcessor.call(function, argsValueHolder);
         return new PromiseImpl<>(valueHolder);
     }
 
@@ -47,6 +54,12 @@ public class PromiseImpl<R> implements Promise<R> {
     public <T> void thenAccept(Consumer<T> consumer ,T t) {
         AsyncProcessor<R> asyncProcessor = new AsyncProcessor<>();
         asyncProcessor.call(consumer,t);
+    }
+
+    @Override
+    public <T> void thenAccept(Consumer<T> consumer, ValueHolder<T> valueHolder) {
+        AsyncProcessor<R> asyncProcessor = new AsyncProcessor<>();
+        asyncProcessor.call(consumer,valueHolder);
     }
 
 
