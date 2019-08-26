@@ -8,4 +8,4 @@ Steps to run:
 
 2)Go to PromiseImplTest
 
-3)Run method any method.
+3)Run any method.
