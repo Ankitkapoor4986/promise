@@ -7,10 +7,6 @@ public class ValueHolder<R> {
 
     private Thread valueSetterThread;
 
-     ValueHolder(Thread valueSetterThread) {
-        this.valueSetterThread = valueSetterThread;
-
-    }
 
      ValueHolder() {
 
@@ -19,10 +15,6 @@ public class ValueHolder<R> {
 
     void setValue(R returnVal) {
         this.returnValue = returnVal;
-    }
-
-    public Thread getValueSetterThread() {
-        return valueSetterThread;
     }
 
 
