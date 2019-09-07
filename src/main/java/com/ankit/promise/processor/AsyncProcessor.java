@@ -7,9 +7,6 @@ import java.util.function.Supplier;
 public class AsyncProcessor<R> {
 
 
-    private R returnVal;
-
-
     public <T> void call(Consumer<T> consumer, T t) {
         Runnable runnable = () -> {
             consumer.accept(t);
@@ -25,53 +22,46 @@ public class AsyncProcessor<R> {
         startThread(runnable);
     }
 
-    public <T>  ValueHolder<R> call(Function<T, R> functionToExecute, T t) {
-
-        Runnable runnable = () -> {
-            returnVal = functionToExecute.apply(t);
-        };
-        return buildValueHolder(runnable);
-
-    }
-
-    public <T>  ValueHolder<R> call(Function<T, R> functionToExecute, ValueHolder<T> valueHolder) {
-
-        Runnable runnable = () -> {
-            T val = valueHolder.get();
-            returnVal = functionToExecute.apply(val);
-        };
-        return buildValueHolder(runnable);
-
-    }
-
-    private ValueHolder<R> buildValueHolder(Runnable runnable) {
-        Thread valueCalculatorThread = startThread(runnable);
+    public <T> ValueHolder<R> call(Function<T, R> functionToExecute, T t) {
         ValueHolder<R> valueHolder = new ValueHolder<>();
-        Runnable valueSetterRunnable = initializeValueSetterRunnable(valueCalculatorThread,valueHolder);
-        Thread valueSetterThread = startThread(valueSetterRunnable);
-        valueHolder.setValueSetterThread(valueSetterThread);
-        return valueHolder;
-
-
-    }
-
-    public ValueHolder<R> call(Supplier<R> supplier) {
         Runnable runnable = () -> {
-            returnVal = supplier.get();
-        };
-
-        return buildValueHolder(runnable);
-
-    }
-
-    private Runnable  initializeValueSetterRunnable(Thread valueCalculatorThread, ValueHolder<R> valueHolder) {
-        return () -> {
-            AsyncProcessorUtil.joinThread(valueCalculatorThread);
+            R returnVal = functionToExecute.apply(t);
             valueHolder.setValue(returnVal);
         };
 
+        return enrichValueHolder(valueHolder, runnable);
+
     }
 
+    private ValueHolder<R> enrichValueHolder(ValueHolder<R> valueHolder, Runnable runnable) {
+        Thread valueCalculatorThread = startThread(runnable);
+        valueHolder.setValueSetterThread(valueCalculatorThread);
+        return valueHolder;
+    }
+
+    public <T> ValueHolder<R> call(Function<T, R> functionToExecute, ValueHolder<T> valueHolder) {
+        ValueHolder<R> valueHolderToReturn = new ValueHolder<>();
+        Runnable runnable = () -> {
+            T val = valueHolder.get();
+            R returnVal = functionToExecute.apply(val);
+            valueHolderToReturn.setValue(returnVal);
+        };
+
+        return enrichValueHolder(valueHolderToReturn, runnable);
+
+    }
+
+
+    public ValueHolder<R> call(Supplier<R> supplier) {
+        ValueHolder<R> valueHolder = new ValueHolder<>();
+        Runnable runnable = () -> {
+            R returnVal = supplier.get();
+            valueHolder.setValue(returnVal);
+        };
+        enrichValueHolder(valueHolder, runnable);
+        return valueHolder;
+
+    }
 
 
     private Thread startThread(Runnable runnable) {
@@ -80,7 +70,6 @@ public class AsyncProcessor<R> {
         return thread;
 
     }
-
 
 
 }
