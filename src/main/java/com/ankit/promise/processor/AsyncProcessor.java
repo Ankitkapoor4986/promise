@@ -25,12 +25,15 @@ public class AsyncProcessor<R> {
     public <T> ValueHolder<R> call(Function<T, R> functionToExecute, T t) {
         ValueHolder<R> valueHolder = new ValueHolder<>();
         Runnable runnable = () -> {
-            R returnVal = functionToExecute.apply(t);
-            valueHolder.setValue(returnVal);
+            declareThreadProcessing(functionToExecute, t, valueHolder);
         };
-
         return enrichValueHolder(valueHolder, runnable);
 
+    }
+
+    private <T> void declareThreadProcessing(Function<T, R> functionToExecute, T t, ValueHolder<R> valueHolder) {
+        R returnVal = functionToExecute.apply(t);
+        valueHolder.setValue(returnVal);
     }
 
     private ValueHolder<R> enrichValueHolder(ValueHolder<R> valueHolder, Runnable runnable) {
@@ -43,8 +46,7 @@ public class AsyncProcessor<R> {
         ValueHolder<R> valueHolderToReturn = new ValueHolder<>();
         Runnable runnable = () -> {
             T val = valueHolder.get();
-            R returnVal = functionToExecute.apply(val);
-            valueHolderToReturn.setValue(returnVal);
+            declareThreadProcessing(functionToExecute, val, valueHolderToReturn);
         };
 
         return enrichValueHolder(valueHolderToReturn, runnable);
@@ -58,8 +60,8 @@ public class AsyncProcessor<R> {
             R returnVal = supplier.get();
             valueHolder.setValue(returnVal);
         };
-        enrichValueHolder(valueHolder, runnable);
-        return valueHolder;
+        return enrichValueHolder(valueHolder, runnable);
+
 
     }
 
